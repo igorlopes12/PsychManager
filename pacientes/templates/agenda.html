@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>Agenda</h1>
+<div id="calendar"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        // Eventos JSON passado como variável de template
+        var eventos = JSON.parse('{{ eventos|escapejs }}');
+        
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'pt-br',
+            events: eventos,  // Use os eventos JSON aqui
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            eventClick: function(info) {
+                alert('Evento: ' + info.event.title + '\nDescrição: ' + info.event.extendedProps.description);
+            }
+        });
+        calendar.render();
+    });
+</script>
+{% endblock %}

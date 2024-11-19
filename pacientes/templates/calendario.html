@@ -1,0 +1,45 @@
+{% load static %}
+{% load fullcalendar %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário de Agendamentos</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/tslib@2.4.0/tslib.min.js"></script>
+
+    <script type="module">
+        import { Calendar } from 'https://cdn.jsdelivr.net/npm/@fullcalendar/core@5.10.1/main.min.js';
+        import { dayGridPlugin } from 'https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@5.10.1/main.min.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var eventos = JSON.parse('{{ eventos_json|escapejs }}');
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new Calendar(calendarEl, {
+                plugins: [dayGridPlugin],
+                events: eventos,
+                editable: true,
+                droppable: true,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                locale: 'pt-br',
+                navLinks: true
+            });
+            calendar.render();
+        });
+    </script>
+</head>
+<body>
+    <h1>Calendário de Agendamentos</h1>
+    <div id="calendar"></div>
+
+    <script id="eventos-json" type="application/json">
+        {{ eventos_json|escapejs }}
+    </script>
+</body>
+</html>

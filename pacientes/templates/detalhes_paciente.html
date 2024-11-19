@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Paciente</title>
+</head>
+<body>
+    <h1>Detalhes do Paciente</h1>
+    <p><strong>Nome:</strong> {{ paciente.nome }}</p>
+    <p><strong>Data de Nascimento:</strong> {{ paciente.data_nascimento }}</p>
+    <p><strong>Email:</strong> {{ paciente.email }}</p>
+    <p><strong>Telefone:</strong> {{ paciente.telefone }}</p>
+    <a href="{% url 'lista_pacientes' %}">Voltar para lista</a>
+</body>
+</html>
