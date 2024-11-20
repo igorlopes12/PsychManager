@@ -1,18 +1,25 @@
 {% extends 'base.html' %}
-{% load static %}
 {% block content %}
 <h1>Agenda</h1>
-<div id="calendar"></div>
+
+<!-- Contêiner do calendário -->
+<div id="calendar" style="max-width: 80%; margin: 0 auto;"></div>
+
+{{ eventos|json_script:"eventos-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
-        // Eventos JSON passado como variável de template
-        var eventos = JSON.parse('{{ eventos|escapejs }}');
+        
+        // Pegando o JSON de forma segura usando o id 'eventos-data'
+        var eventos = JSON.parse(document.getElementById('eventos-data').textContent);
         
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             locale: 'pt-br',
-            events: eventos,  // Use os eventos JSON aqui
+            events: eventos,
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
@@ -25,4 +32,5 @@
         calendar.render();
     });
 </script>
+
 {% endblock %}
