@@ -1,17 +1,31 @@
+{% extends 'base.html' %}
+
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Paciente</title>
-</head>
-<body>
-    <h1>Detalhes do Paciente</h1>
-    <p><strong>Nome:</strong> {{ paciente.nome }}</p>
-    <p><strong>Data de Nascimento:</strong> {{ paciente.data_nascimento }}</p>
-    <p><strong>Email:</strong> {{ paciente.email }}</p>
-    <p><strong>Telefone:</strong> {{ paciente.telefone }}</p>
-    <a href="{% url 'lista_pacientes' %}">Voltar para lista</a>
-</body>
-</html>
+
+{% block content %}
+<!-- Detalhes do Paciente -->
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card shadow-lg">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4>Detalhes do Paciente</h4>
+                </div>
+                <div class="card-body">
+                    <h5><strong>Nome:</strong> {{ paciente.nome }}</h5>
+                    <p><strong>Data de Nascimento:</strong> {{ paciente.data_nascimento }}</p>
+                    <p><strong>Email:</strong> {{ paciente.email }}</p>
+                    <p><strong>Telefone:</strong> {{ paciente.telefone }}</p>
+                    <p><strong>Endereço:</strong> {{ paciente.endereco }}</p>
+                    <p><strong>Queixa Principal:</strong> {{ paciente.queixa_principal }}</p>
+
+                    <!-- Voltar para a lista de pacientes -->
+                    <div class="mt-4 text-center">
+                        <a href="{% url 'lista_pacientes' %}" class="btn btn-secondary">Voltar para a lista</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -14,9 +14,6 @@ def home_view(request):
         return render(request, 'home.html')
 
 
-
-
-
 def agenda_view(request):
     # Obtendo todos os agendamentos do banco de dados
     agendamentos = Agendamento.objects.all()
