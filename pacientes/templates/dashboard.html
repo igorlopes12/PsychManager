@@ -1,75 +1,114 @@
 {% extends 'base.html' %}
 
+{% load bootstrap5 %}
+
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <!-- Barra Lateral -->
-        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-            <div class="position-sticky">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'lista_pacientes' %}">
-                            <i class="bi bi-house-door"></i>
-                            Pacientes
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'novo_paciente' %}">
-                            <i class="bi bi-person-plus"></i>
-                            Adicionar Paciente
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'agenda_view' %}">
-                            <i class="bi bi-calendar"></i>
-                            Agenda
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+<div class="container mt-4">
+    <!-- Título de boas-vindas -->
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Bem-vinda, Maria Gabriela</h1>
+    </div>
 
-        <!-- Conteúdo Principal -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Bem-vinda, Maria Gabriela</h1>
-            </div>
-            
-            <h3>Visão Geral</h3>
-            <p>Gerencie suas consultas e pacientes facilmente.</p>
+    <!-- Visão geral -->
+    <h3>Visão Geral</h3>
+    <p>Gerencie suas consultas e pacientes facilmente.</p>
 
-            <!-- Botão para Adicionar Paciente -->
-            <div class="mb-3">
-                <a href="{% url 'novo_paciente' %}" class="btn btn-success">Adicionar Novo Paciente</a>
-            </div>
+    <!-- Botão para adicionar paciente -->
+    <div class="mb-3">
+        <a href="{% url 'novo_paciente' %}" class="btn btn-success">Adicionar Novo Paciente</a>
+    </div>
 
-            <!-- Pacientes Recentes -->
-            <h4>Pacientes Recentes</h4>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Nome</th>
-                        <th>Data de Nascimento</th>
-                        <th>Endereço</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for paciente in pacientes %}
-                    <tr>
-                        <td>{{ paciente.id }}</td>
-                        <td>{{ paciente.nome }}</td>
-                        <td>{{ paciente.data_nascimento }}</td>
-                        <td>{{ paciente.endereco }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4">Nenhum paciente registrado ainda.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </main>
+    <!-- Tabela de Pacientes Recentes -->
+    <h4>Pacientes Recentes</h4>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Data de Nascimento</th>
+                <th>Endereço</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paciente in pacientes %}
+            <tr>
+                <td>{{ paciente.id }}</td>
+                <td>{{ paciente.nome }}</td>
+                <td>{{ paciente.data_nascimento }}</td>
+                <td>{{ paciente.endereco }}</td>
+                <td>
+                    <!-- Botões de Ação -->
+                    <a href="#" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editarModal" data-id="{{ paciente.id }}" data-nome="{{ paciente.nome }}" data-data-nascimento="{{ paciente.data_nascimento }}" data-endereco="{{ paciente.endereco }}">
+                        Editar
+                    </a>
+                    <a href="{% url 'excluir_paciente' paciente.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este paciente?')">Excluir</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Nenhum paciente registrado ainda.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal de Edição -->
+<div class="modal fade" id="editarModal" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarModalLabel">Editar Paciente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-editar-paciente" method="post" action="">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_nome" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="id_nome" name="nome" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_data_nascimento" class="form-label">Data de Nascimento</label>
+                        <input type="date" class="form-control" id="id_data_nascimento" name="data_nascimento" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_endereco" class="form-label">Endereço</label>
+                        <input type="text" class="form-control" id="id_endereco" name="endereco" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
+
 {% endblock %}
+
+<script>
+    // Preencher o modal com os dados do paciente
+    const editarModal = document.getElementById('editarModal');
+    editarModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget; // Botão que abriu o modal
+        const pacienteId = button.getAttribute('data-id');
+        const pacienteNome = button.getAttribute('data-nome');
+        const pacienteDataNascimento = button.getAttribute('data-data-nascimento');
+        const pacienteEndereco = button.getAttribute('data-endereco');
+
+        const modalTitle = editarModal.querySelector('.modal-title');
+        const inputNome = editarModal.querySelector('#id_nome');
+        const inputDataNascimento = editarModal.querySelector('#id_data_nascimento');
+        const inputEndereco = editarModal.querySelector('#id_endereco');
+        const form = document.getElementById('form-editar-paciente');
+
+        // Atualizando o título do modal e os campos do formulário
+        modalTitle.textContent = `Editar Paciente: ${pacienteNome}`;
+        inputNome.value = pacienteNome;
+        inputDataNascimento.value = pacienteDataNascimento;
+        inputEndereco.value = pacienteEndereco;
+
+        // Alterar a URL de ação do formulário para o link correto de edição
+        form.action = `/paciente/${pacienteId}/editar/`;
+    });
+</script>

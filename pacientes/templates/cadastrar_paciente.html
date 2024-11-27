@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 {% block content %}
 <h1>Adicionar Novo Paciente</h1>
 <form method="post" novalidate>
     {% csrf_token %}
-    {{ form.as_p }}
+    <table>
+        {{NovoPacienteForm.as_table}}
+    </table>
+    
     <button type="submit" class="btn btn-primary">Salvar</button>
     <a href="{% url 'lista_pacientes' %}" class="btn btn-secondary">Cancelar</a>
 </form>

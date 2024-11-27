@@ -1,54 +1,43 @@
-{% extends 'base.html' %}
-{% block content %}
-<!-- Banner Principal -->
-<div class="bg-success text-white text-center p-5 mb-4">
-    <h1>Bem-vindo ao Consultório de Maria Gabriela</h1>
-    <p>Gerencie seus pacientes, agendamentos e detalhes com facilidade. Organize seu dia de trabalho de maneira eficiente e prática.</p>
-</div>
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultório Maria Gabriela</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- Banner -->
+    <div class="banner">
+        <h1>Bem-vindo ao Consultório de Maria Gabriela</h1>
+        <p>Gerencie seus pacientes, agendamentos e detalhes com facilidade. Organize seu dia de trabalho de maneira eficiente e prática.</p>
+    </div>
 
-<!-- Cartões de Ações -->
-<div class="container">
-    <div class="row justify-content-center">
-        <!-- Ver Pacientes -->
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="https://via.placeholder.com/150" class="card-img-top" alt="Pacientes">
-                <div class="card-body">
-                    <h5 class="card-title">Ver Pacientes</h5>
-                    <p class="card-text">Acesse todos os pacientes cadastrados e visualize detalhes de cada um.</p>
-                    <a href="{% url 'lista_pacientes' %}" class="btn btn-success">Ver Pacientes</a>
-                </div>
-            </div>
+    <!-- Conteúdo principal -->
+    <div class="container">
+        <div class="card">
+            <img src="{% static 'images/paciente.jpg' %}" alt="Imagem do paciente">
+            <h2>Ver Pacientes</h2>
+            <p>Acesse todos os pacientes cadastrados e visualize detalhes de cada um.</p>
+            <button>Ver Pacientes</button>
         </div>
-
-        <!-- Ver Agenda -->
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="https://via.placeholder.com/150" class="card-img-top" alt="Agenda">
-                <div class="card-body">
-                    <h5 class="card-title">Ver Agenda</h5>
-                    <p class="card-text">Visualize seus agendamentos por dia, semana ou mês. Organize seu tempo.</p>
-                    <a href="{% url 'agenda_view' %}" class="btn btn-success">Ver Agenda</a>
-                </div>
-            </div>
+        <div class="card">
+            <img src="{% static 'images/agenda.jpg' %}" alt="Imagem da agenda">
+            <h2>Ver Agenda</h2>
+            <p>Visualize seus agendamentos por dia, semana ou mês. Organize seu tempo.</p>
+            <button>Ver Agenda</button>
         </div>
-
-        <!-- Adicionar Paciente -->
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="pacientes/static/images/pessoa.png" class="card-img-top" alt="Adicionar Paciente">
-                <div class="card-body">
-                    <h5 class="card-title">Adicionar Paciente</h5>
-                    <p class="card-text">Cadastre novos pacientes rapidamente no sistema.</p>
-                    <a href="{% url 'novo_paciente' %}" class="btn btn-success">Adicionar Paciente</a>
-                </div>
-            </div>
+        <div class="card">
+            <h2>Adicionar Paciente</h2>
+            <p>Cadastre novos pacientes rapidamente no sistema.</p>
+            <button>Adicionar Paciente</button>
         </div>
     </div>
-</div>
 
-<!-- Rodapé -->
-<footer class="bg-dark text-white text-center p-3 mt-5">
-    <p>© 2024 Consultório de Maria Gabriela - Psicóloga</p>
-</footer>
-{% endblock %}
+    <!-- Rodapé -->
+    <footer>
+        <p>&copy; 2024 Consultório de Maria Gabriela - Psicóloga</p>
+    </footer>
+</body>
+</html>

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'pacientes',
     'phonenumber_field',
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -110,7 +111,7 @@ LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
-
+USE_L10N = False
 USE_TZ = True
 
 

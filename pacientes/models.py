@@ -10,8 +10,8 @@ class Paciente(models.Model):
     endereco = models.CharField(max_length=200)
     queixa_principal = models.TextField()
 
-def __str__(self):
-        return self.nome
+    def __str__(self):
+            return self.nome
 
 
 class Agendamento(models.Model):

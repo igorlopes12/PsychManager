@@ -3,14 +3,7 @@
 {% load bootstrap5 %}
 
 {% block content %}
-<h1>Detalhes do Paciente: {{ paciente.nome }}</h1>
-
-<!-- Exibe os detalhes do paciente -->
-<p><strong>Nome:</strong> {{ paciente.nome }}</p>
-<p><strong>Data de Nascimento:</strong> {{ paciente.data_nascimento }}</p>
-<p><strong>Telefone:</strong> {{ paciente.telefone }}</p>
-<p><strong>Endereço:</strong> {{ paciente.endereco }}</p>
-<p><strong>Queixa Principal:</strong> {{ paciente.queixa_principal }}</p>
+<h1>Editar Paciente: {{ paciente.nome }}</h1>
 
 <!-- Botão para abrir o Modal de Edição -->
 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarPacienteModal">Editar</button>
@@ -27,7 +20,8 @@
                 <!-- Formulário de Edição -->
                 <form method="POST">
                     {% csrf_token %}
-                    {% bootstrap_form form %}
+                    {% bootstrap_form form %}  <!-- Renderiza o formulário com os estilos do Bootstrap 5 -->
+
                     <button type="submit" class="btn btn-success">Salvar Alterações</button>
                 </form>
             </div>

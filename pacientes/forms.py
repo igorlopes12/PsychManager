@@ -4,7 +4,7 @@ from pacientes.models import Paciente, Agendamento
 class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente
-        fields = ['nome', 'data_nascimento', 'queixa_principal', 'endereco']
+        fields = '__all__'
         widgets = {
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
         }
@@ -12,7 +12,7 @@ class PacienteForm(forms.ModelForm):
 class AgendamentoForm(forms.ModelForm):
     class Meta:
         model = Agendamento
-        fields = ['paciente', 'data', 'hora_inicio', 'hora_fim', 'descricao']
+        fields = '__all__'
         widgets = {
             'data': forms.DateInput(attrs={'type': 'date'}),
             'hora_inicio': forms.TimeInput(attrs={'type': 'time'}),
