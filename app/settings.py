@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'pacientes',
     'phonenumber_field',
     'bootstrap5',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -106,13 +107,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'pt-br'  # Define o idioma como português do Brasil
 
-USE_I18N = True
-USE_L10N = False
-USE_TZ = True
+TIME_ZONE = 'America/Sao_Paulo'  # Define o fuso horário para São Paulo
+
+USE_L10N = True  # Ativa a formatação local para as datas (e outros dados)
+USE_TZ = True  # Ativa o uso de timezone (necessário para lidar com fuso horário)
 
 
 # Static files (CSS, JavaScript, Images)

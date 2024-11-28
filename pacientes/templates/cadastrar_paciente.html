@@ -1,16 +1,47 @@
 {% extends 'base.html' %}
 {% load bootstrap5 %}
+{% load widget_tweaks %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
+
 {% block content %}
-<h1>Adicionar Novo Paciente</h1>
-<form method="post" novalidate>
-    {% csrf_token %}
-    <table>
-        {{NovoPacienteForm.as_table}}
-    </table>
-    
-    <button type="submit" class="btn btn-primary">Salvar</button>
-    <a href="{% url 'lista_pacientes' %}" class="btn btn-secondary">Cancelar</a>
-</form>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Adicionar Novo Paciente</h1>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="id_nome" class="form-label">Nome</label>
+                {% render_field form.nome class="form-control" %}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="id_data_nascimento" class="form-label">Data de Nascimento</label>
+                {% render_field form.data_nascimento class="form-control" %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="id_telefone" class="form-label">Telefone</label>
+                {% render_field form.telefone class="form-control" %}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="id_endereco" class="form-label">Endereço</label>
+                {% render_field form.endereco class="form-control" %}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_queixa_principal" class="form-label">Queixa Principal</label>
+            {% render_field form.queixa_principal class="form-control" %}
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="{% url 'lista_pacientes' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

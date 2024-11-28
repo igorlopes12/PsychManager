@@ -1,135 +1,128 @@
 from django.views import View
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, UpdateView, DeleteView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
+from django.urls import reverse_lazy
 from pacientes.models import Paciente, Agendamento
 from pacientes.forms import PacienteForm, AgendamentoForm
-import json
+from django.views.generic import ListView, CreateView
 
-
+# Home View (não precisa de FormView ou outra CBV, já que só renderiza a página)
 class HomeView(View):
     def get(self, request):
         return render(request, 'home.html')
 
 
-class CadastrarPacienteView(FormView):
-    template_name = 'cadastrar_paciente.html'
+# Cadastrar Paciente View
+class CadastrarPacienteView(CreateView):
+    model = Paciente
     form_class = PacienteForm
-    success_url = '/pacientes/'
+    template_name = 'cadastrar_paciente.html'
+    success_url = reverse_lazy('lista_pacientes')  # Ou qualquer URL que você deseja redirecionar após salvar
 
-    def get(self, request):
-        form = PacienteForm()
-        return render(request, 'cadastrar_paciente.html', {'NovoPacienteForm': form})
-
-    def post(self, request):
-        form = PacienteForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('lista_pacientes')
-        return render(request, 'cadastrar_paciente.html', {'NovoPacienteForm': form})
+    def form_valid(self, form):
+        # Aqui você pode adicionar qualquer lógica extra antes do salvar, se necessário
+        return super().form_valid(form)
 
 
-# def cadastrar_paciente_view(request):
-#     if request.method == 'POST':
-#         form = PacienteForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('lista_pacientes')
-#     else:
-#         form = PacienteForm()  # Inicializa o formulário para GET ou outros métodos
+class ExcluirPacienteView(DeleteView):
+    model = Paciente
+    success_url = reverse_lazy('lista_pacientes')  # Redireciona após exclusão
 
-#     return render(request, 'cadastrar_paciente.html', {'NovoPacienteForm': form})
+    def post(self, request, *args, **kwargs):
+        # Executa a exclusão via POST
+        return super().post(request, *args, **kwargs)
 
-
-def excluir_paciente_view(request, paciente_id):
-    paciente = get_object_or_404(Paciente, id=paciente_id)
-    paciente.delete()
-    return redirect('lista_pacientes')
+    def get(self, request, *args, **kwargs):
+        # Garante que a exclusão seja feita apenas via POST
+        return HttpResponseForbidden("A exclusão deve ser realizada com o método POST.")
 
 
-def detalhes_paciente_view(request, id):
-    paciente = get_object_or_404(Paciente, pk=id)
-    return JsonResponse({
-        'nome': paciente.nome,
-        'data_nascimento': paciente.data_nascimento,
-        'endereco': paciente.endereco,
-    })
-
-
-def editar_paciente_view(request, id):
-    paciente = get_object_or_404(Paciente, pk=id)
-    if request.method == 'POST':
-        form = PacienteForm(request.POST, instance=paciente)
-        if form.is_valid():
-            form.save()
-            # Em vez de redirecionar, retornar um JSON
-            return JsonResponse({'success': True, 'nome': paciente.nome, 'id': paciente.id})
-        else:
-            return JsonResponse({'success': False, 'errors': form.errors})
-    else:
-        form = PacienteForm(instance=paciente)
-    return render(request, 'editar_paciente.html', {'form': form, 'paciente': paciente})
-
-
-def lista_pacientes_view(request):
-    pacientes = Paciente.objects.all()
-    return render(request, 'lista_pacientes.html', {'pacientes': pacientes})
-
-
-def agenda_view(request):
-    agendamentos = Agendamento.objects.all()
-    eventos = []
-    for agendamento in agendamentos:
-        eventos.append({
-            'title': agendamento.paciente.nome,
-            'start': agendamento.inicio_completo.isoformat(),
-            'end': agendamento.fim_completo.isoformat(),
-            'description': agendamento.descricao,
+# Detalhes Paciente View
+class DetalhesPacienteView(View):
+    def get(self, request, id):
+        paciente = get_object_or_404(Paciente, pk=id)
+        return JsonResponse({
+            'nome': paciente.nome,
+            'data_nascimento': paciente.data_nascimento,
+            'endereco': paciente.endereco,
         })
-    return render(request, 'agenda.html', {'eventos': eventos})
 
 
-def criar_agendamento_view(request):
-    if request.method == 'POST':
-        form = AgendamentoForm(request.POST)
-        if form.is_valid():
-            # Validar conflitos de horário
-            paciente = form.cleaned_data['paciente']
-            data = form.cleaned_data['data']
-            hora_inicio = form.cleaned_data['hora_inicio']
-            hora_fim = form.cleaned_data['hora_fim']
+# Editar Paciente View (usando UpdateView)
+class EditarPacienteView(UpdateView):
+    model = Paciente
+    form_class = PacienteForm
+    template_name = 'editar_paciente.html'
 
-            conflitos = Agendamento.objects.filter(
-                paciente=paciente,
-                data=data,
-                hora_inicio__lt=hora_fim,
-                hora_fim__gt=hora_inicio
-            )
+    def get_success_url(self):
+        return reverse_lazy('lista_pacientes')
 
-            if conflitos.exists():
-                form.add_error(None, "Já existe um agendamento para este paciente nesse horário.")
-            else:
-                form.save()
-                return redirect('agenda_view')  # Redireciona para a agenda
-    else:
-        form = AgendamentoForm()
-
-    return render(request, 'criar_agendamento.html', {'AgendamentoForm': form})
+    def form_invalid(self, form):
+        return JsonResponse({'success': False, 'errors': form.errors})
 
 
-def agendamentos_por_paciente(request, paciente_id):
-    agendamentos = Agendamento.objects.filter(paciente_id=paciente_id)
-    eventos = []
-    for agendamento in agendamentos:
-        eventos.append({
+# Lista de Pacientes View (usando ListView)
+class ListaPacientesView(ListView):
+    model = Paciente
+    template_name = 'lista_pacientes.html'
+    context_object_name = 'pacientes'
+
+
+# Agenda View (não tem muita mudança aqui, mas podemos otimizar para uma CBV)
+class AgendaView(View):
+    def get(self, request):
+        agendamentos = Agendamento.objects.all()
+        eventos = [{
             'title': agendamento.paciente.nome,
             'start': agendamento.inicio_completo.isoformat(),
             'end': agendamento.fim_completo.isoformat(),
             'description': agendamento.descricao,
-        })    
-    return JsonResponse(eventos, safe=False)
+        } for agendamento in agendamentos]
+        return render(request, 'agenda.html', {'eventos': eventos})
 
 
-def dashboard_view(request):
-    pacientes = Paciente.objects.all()  # Pega todos os pacientes
-    return render(request, 'dashboard.html', {'pacientes': pacientes})
+# Criar Agendamento View (usando FormView)
+class CriarAgendamentoView(FormView):
+    form_class = AgendamentoForm
+    template_name = 'criar_agendamento.html'
+    success_url = reverse_lazy('agenda_view')
+
+    def form_valid(self, form):
+        paciente = form.cleaned_data['paciente']
+        data = form.cleaned_data['data']
+        hora_inicio = form.cleaned_data['hora_inicio']
+        hora_fim = form.cleaned_data['hora_fim']
+
+        conflitos = Agendamento.objects.filter(
+            paciente=paciente,
+            data=data,
+            hora_inicio__lt=hora_fim,
+            hora_fim__gt=hora_inicio
+        )
+
+        if conflitos.exists():
+            form.add_error(None, "Já existe um agendamento para este paciente nesse horário.")
+            return self.form_invalid(form)
+        form.save()
+        return super().form_valid(form)
+
+
+# Agendamentos por Paciente (agora usando JsonResponse, mas com lógica CBV)
+class AgendamentosPorPacienteView(View):
+    def get(self, request, paciente_id):
+        agendamentos = Agendamento.objects.filter(paciente_id=paciente_id)
+        eventos = [{
+            'title': agendamento.paciente.nome,
+            'start': agendamento.inicio_completo.isoformat(),
+            'end': agendamento.fim_completo.isoformat(),
+            'description': agendamento.descricao,
+        } for agendamento in agendamentos]
+        return JsonResponse(eventos, safe=False)
+
+
+# Dashboard View (similar à lista de pacientes, pode ser uma ListView também)
+class DashboardView(View):
+    def get(self, request):
+        pacientes = Paciente.objects.all()
+        return render(request, 'dashboard.html', {'pacientes': pacientes})

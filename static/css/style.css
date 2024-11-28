@@ -1,6 +1,6 @@
 /* Ajustes para garantir que o banner ocupe toda a tela */
 .banner {
-    background-color: #4e73df;
+    background-color: #48ff00f6;
     color: white;
     text-align: center;
     padding: 100px 0;
@@ -14,17 +14,12 @@ footer {
     text-align: center;
     padding: 10px;
     background-color: #f8f9fa;
-    position: relative;
     bottom: 0;
     width: 100%;
     margin-top: 20px;
+    line-height: 60px;
 }
 
-/* Garantir que o layout principal tenha altura mínima para preencher a tela */
-body, html {
-    height: 100%;
-    margin: 0;
-}
 
 /* Garantir que o conteúdo ocupe o restante da altura disponível */
 .container {
@@ -42,4 +37,13 @@ body, html {
 .card-img-top {
     max-height: 200px;
     object-fit: cover;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
 }

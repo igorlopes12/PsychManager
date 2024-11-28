@@ -1,43 +1,54 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultório Maria Gabriela</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <!-- Banner -->
-    <div class="banner">
-        <h1>Bem-vindo ao Consultório de Maria Gabriela</h1>
-        <p>Gerencie seus pacientes, agendamentos e detalhes com facilidade. Organize seu dia de trabalho de maneira eficiente e prática.</p>
-    </div>
+{% extends 'base.html' %}
 
-    <!-- Conteúdo principal -->
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-primary text-white text-center py-5">
     <div class="container">
-        <div class="card">
-            <img src="{% static 'images/paciente.jpg' %}" alt="Imagem do paciente">
-            <h2>Ver Pacientes</h2>
-            <p>Acesse todos os pacientes cadastrados e visualize detalhes de cada um.</p>
-            <button>Ver Pacientes</button>
+        <h1 class="display-4 fw-bold">Bem-vindo ao PsychManager</h1>
+        <p class="lead">Gerencie seus pacientes, agenda e consultas de forma prática e eficiente.</p>
+        <a href="{% url 'lista_pacientes' %}" class="btn btn-light btn-lg mt-3">Ver Pacientes</a>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="container my-5">
+    <div class="row text-center">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <i class="bi bi-person-circle display-4 text-primary"></i>
+                    <h5 class="card-title mt-3">Gerenciamento de Pacientes</h5>
+                    <p class="card-text">Acesse informações detalhadas de seus pacientes em poucos cliques.</p>
+                </div>
+            </div>
         </div>
-        <div class="card">
-            <img src="{% static 'images/agenda.jpg' %}" alt="Imagem da agenda">
-            <h2>Ver Agenda</h2>
-            <p>Visualize seus agendamentos por dia, semana ou mês. Organize seu tempo.</p>
-            <button>Ver Agenda</button>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <i class="bi bi-calendar-check display-4 text-primary"></i>
+                    <h5 class="card-title mt-3">Organização de Agenda</h5>
+                    <p class="card-text">Tenha total controle sobre seus compromissos e horários.</p>
+                </div>
+            </div>
         </div>
-        <div class="card">
-            <h2>Adicionar Paciente</h2>
-            <p>Cadastre novos pacientes rapidamente no sistema.</p>
-            <button>Adicionar Paciente</button>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <i class="bi bi-bar-chart-line display-4 text-primary"></i>
+                    <h5 class="card-title mt-3">Relatórios Detalhados</h5>
+                    <p class="card-text">Visualize relatórios completos para acompanhar seu desempenho.</p>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- Rodapé -->
-    <footer>
-        <p>&copy; 2024 Consultório de Maria Gabriela - Psicóloga</p>
-    </footer>
-</body>
-</html>
+<!-- Call to Action Section -->
+<div class="bg-light py-5">
+    <div class="container text-center">
+        <h2 class="fw-bold">Pronto para começar?</h2>
+        <p class="lead">Experimente agora mesmo e leve sua gestão para o próximo nível.</p>
+        <a href="{% url 'agenda_view' %}" class="btn btn-primary btn-lg">Ver Agenda</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,12 +1,11 @@
 from django.db import models
 from django.utils import timezone
-from phonenumber_field.modelfields import PhoneNumberField
 
 class Paciente(models.Model):
     id = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=100)
     data_nascimento = models.DateField()
-    telefone = PhoneNumberField()
+    telefone = models.TextField()
     endereco = models.CharField(max_length=200)
     queixa_principal = models.TextField()
 
