@@ -3,10 +3,9 @@
 <h1>Criar Agendamento</h1>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-
-    <table>
-        {{ AgendamentoForm.as_table }}
-    </table>
+    
+    <!-- Renderização dos campos do formulário -->
+    {{ form.as_p }}
     
     <button type="submit" class="btn btn-primary">Salvar</button>
 </form>

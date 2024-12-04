@@ -29,16 +29,18 @@ class AgendamentoForm(forms.ModelForm):
         model = Agendamento
         fields = '__all__'
         widgets = {
-            'data': forms.DateInput(attrs={'type': 'text'}),  # Mudando para 'text' se quiser manipular a data
-            'hora_inicio': forms.TimeInput(attrs={'type': 'time'}),
-            'hora_fim': forms.TimeInput(attrs={'type': 'time'}),
+            'data': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),  # Tipo corrigido para 'date'
+            'hora_inicio': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'hora_fim': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'descricao': forms.Textarea(attrs={'class': 'form-control'}),
         }
 
     def clean_data(self):
-        data = self.cleaned_data['data']
-        try:
-            # Convertendo a data para o formato dd-mm-yyyy
-            return datetime.strptime(data, '%d-%m-%Y').date()
-        except ValueError:
-            raise forms.ValidationError('Formato de data inválido. Use dd-mm-yyyy.')
+        data = self.cleaned_data['data']  # Isso já é um objeto datetime.date
+
+        # Validação personalizada (exemplo: impedir datas passadas)
+        if data and data < datetime.now().date():
+            raise forms.ValidationError("A data do agendamento não pode ser no passado.")
+
+        return data
 

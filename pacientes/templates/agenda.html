@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <h1>Agenda</h1>
 
@@ -25,10 +26,34 @@
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
+            // Exibindo detalhes ao passar o mouse (hover) com tooltips
+            eventMouseEnter: function(info) {
+                var tooltip = document.createElement('div');
+                tooltip.classList.add('fc-tooltip');
+                tooltip.innerHTML = 'Evento: ' + info.event.title + 
+                                    '<br>Paciente: ' + info.event.title.split(' - ')[1] + 
+                                    '<br>Descrição: ' + info.event.extendedProps.description;
+                
+                // Estilizando o tooltip
+                document.body.appendChild(tooltip);
+                tooltip.style.position = 'absolute';
+                tooltip.style.top = info.jsEvent.pageY + 'px';
+                tooltip.style.left = info.jsEvent.pageX + 'px';
+                tooltip.style.backgroundColor = 'white';
+                tooltip.style.border = '1px solid #ccc';
+                tooltip.style.padding = '5px';
+                tooltip.style.zIndex = '1000';
+                
+                // Remover o tooltip ao sair
+                info.el.onmouseleave = function() {
+                    document.body.removeChild(tooltip);
+                };
+            },
             eventClick: function(info) {
                 alert('Evento: ' + info.event.title + '\nDescrição: ' + info.event.extendedProps.description);
             }
         });
+
         calendar.render();
     });
 </script>

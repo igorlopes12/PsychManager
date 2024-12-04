@@ -1,11 +1,12 @@
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView, DeleteView
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseForbidden, JsonResponse
 from django.urls import reverse_lazy
 from pacientes.models import Paciente, Agendamento
 from pacientes.forms import PacienteForm, AgendamentoForm
 from django.views.generic import ListView, CreateView
+
 
 # Home View (não precisa de FormView ou outra CBV, já que só renderiza a página)
 class HomeView(View):
@@ -82,18 +83,19 @@ class AgendaView(View):
         return render(request, 'agenda.html', {'eventos': eventos})
 
 
-# Criar Agendamento View (usando FormView)
 class CriarAgendamentoView(FormView):
     form_class = AgendamentoForm
     template_name = 'criar_agendamento.html'
     success_url = reverse_lazy('agenda_view')
 
     def form_valid(self, form):
+        # Obtenha os dados diretamente do `form.cleaned_data`
         paciente = form.cleaned_data['paciente']
-        data = form.cleaned_data['data']
+        data = form.cleaned_data['data']  # Este é um objeto datetime.date
         hora_inicio = form.cleaned_data['hora_inicio']
         hora_fim = form.cleaned_data['hora_fim']
 
+        # Verifique conflitos sem alterar o tipo do campo `data`
         conflitos = Agendamento.objects.filter(
             paciente=paciente,
             data=data,
@@ -104,6 +106,8 @@ class CriarAgendamentoView(FormView):
         if conflitos.exists():
             form.add_error(None, "Já existe um agendamento para este paciente nesse horário.")
             return self.form_invalid(form)
+        
+        # Salve o formulário normalmente
         form.save()
         return super().form_valid(form)
 
