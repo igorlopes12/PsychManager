@@ -1,54 +1,64 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Hero Section -->
-<div class="bg-primary text-white text-center py-5">
-    <div class="container">
-        <h1 class="display-4 fw-bold">Bem-vindo ao PsychManager</h1>
-        <p class="lead">Gerencie seus pacientes, agenda e consultas de forma prática e eficiente.</p>
-        <a href="{% url 'lista_pacientes' %}" class="btn btn-light btn-lg mt-3">Ver Pacientes</a>
-    </div>
-</div>
-
-<!-- Features Section -->
-<div class="container my-5">
-    <div class="row text-center">
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0">
+<!-- Welcome Section -->
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
                 <div class="card-body">
-                    <i class="bi bi-person-circle display-4 text-primary"></i>
-                    <h5 class="card-title mt-3">Gerenciamento de Pacientes</h5>
-                    <p class="card-text">Acesse informações detalhadas de seus pacientes em poucos cliques.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <i class="bi bi-calendar-check display-4 text-primary"></i>
-                    <h5 class="card-title mt-3">Organização de Agenda</h5>
-                    <p class="card-text">Tenha total controle sobre seus compromissos e horários.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <i class="bi bi-bar-chart-line display-4 text-primary"></i>
-                    <h5 class="card-title mt-3">Relatórios Detalhados</h5>
-                    <p class="card-text">Visualize relatórios completos para acompanhar seu desempenho.</p>
+                    <h2 class="card-title">Bem-vindo(a), {{ user.first_name|default:user.username }}!</h2>
+                    <p class="card-text">Aqui está sua agenda para hoje ({{ today }}).</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Call to Action Section -->
-<div class="bg-light py-5">
-    <div class="container text-center">
-        <h2 class="fw-bold">Pronto para começar?</h2>
-        <p class="lead">Experimente agora mesmo e leve sua gestão para o próximo nível.</p>
-        <a href="{% url 'agenda_view' %}" class="btn btn-primary btn-lg">Ver Agenda</a>
+<!-- Today's Events Section -->
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Eventos de Hoje</h3>
+                </div>
+                <div class="card-body">
+                    {% if today_events %}
+                        <div class="list-group">
+                            {% for event in today_events %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ event.paciente }}</h5>
+                                        <small>{{ event.hora_inicio }} - {{ event.hora_fim }}</small>
+                                    </div>
+                                    {% if event.descricao %}
+                                        <p class="mb-1">{{ event.descricao }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Nenhum evento agendado para hoje.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Ações Rápidas</h3>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'novo_paciente' %}" class="btn btn-primary">Novo Paciente</a>
+                        <a href="{% url 'criar_agendamento' %}" class="btn btn-success">Novo Agendamento</a>
+                        <a href="{% url 'lista_pacientes' %}" class="btn btn-info text-white">Lista de Pacientes</a>
+                        <a href="{% url 'agenda_view' %}" class="btn btn-secondary">Ver Agenda Completa</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,16 +1,28 @@
 {% load static %}
 {% load bootstrap5 %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PsychManager - Home</title>
     <!-- Bootstrap CSS -->
     {% bootstrap_css %}
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            margin-bottom: 2rem;
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
+    {% if user.is_authenticated %}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home_view' %}">PsychManager</a>
@@ -20,7 +32,7 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home_view' %}">Dashboard</a>
+                        <a class="nav-link" href="{% url 'home_view' %}">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'lista_pacientes' %}">Pacientes</a>
@@ -31,10 +43,33 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'novo_paciente' %}">Novo Paciente</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'criar_agendamento' %}">Novo Agendamento</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
+    {% else %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'login' %}">PsychManager</a>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
 
     <!-- Bloco de conteúdo dinâmico -->
     {% block content %}
@@ -50,5 +85,22 @@
 
     <!-- Bootstrap JS -->
     {% bootstrap_javascript %}
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuração padrão para todos os campos de data
+            const defaultConfig = {
+                locale: "pt",
+                dateFormat: "d/m/Y",
+                allowInput: true,
+                disableMobile: true
+            };
+
+            // Inicializa o flatpickr em todos os campos com a classe flatpickr
+            flatpickr(".flatpickr", defaultConfig);
+        });
+    </script>
 </body>
 </html>

@@ -6,42 +6,69 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Adicionar Novo Paciente</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Adicionar Novo Paciente</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
 
-    <form method="post" novalidate>
-        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="id_nome" class="form-label">Nome</label>
+                                {% render_field form.nome class="form-control" placeholder="Nome completo" style="width: 100%; min-width: 200px; resize: none;" %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_data_nascimento" class="form-label">Data de Nascimento</label>
+                                {% render_field form.data_nascimento class="form-control" style="width: 100%; min-width: 200px; resize: none;" %}
+                            </div>
+                        </div>
 
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="id_nome" class="form-label">Nome</label>
-                {% render_field form.nome class="form-control" %}
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="id_data_nascimento" class="form-label">Data de Nascimento</label>
-                {% render_field form.data_nascimento class="form-control" %}
+                        <div class="row g-3 mt-3">
+                            <div class="col-md-6">
+                                <label for="id_telefone" class="form-label">Telefone</label>
+                                {% render_field form.telefone class="form-control" placeholder="(00) 00000-0000" style="width: 100%; min-width: 200px; resize: none;" %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_endereco" class="form-label">Endereço</label>
+                                {% render_field form.endereco class="form-control" placeholder="Endereço completo" style="width: 100%; min-width: 200px; resize: none;" %}
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="id_queixa_principal" class="form-label">Queixa Principal</label>
+                            {% render_field form.queixa_principal class="form-control" placeholder="Descreva a queixa principal" rows="3" style="width: 100%; min-width: 200px; resize: none;" %}
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">Salvar Paciente</button>
+                            <a href="{% url 'lista_pacientes' %}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="id_telefone" class="form-label">Telefone</label>
-                {% render_field form.telefone class="form-control" %}
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="id_endereco" class="form-label">Endereço</label>
-                {% render_field form.endereco class="form-control" %}
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="id_queixa_principal" class="form-label">Queixa Principal</label>
-            {% render_field form.queixa_principal class="form-control" %}
-        </div>
-
-        <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-primary">Salvar</button>
-            <a href="{% url 'lista_pacientes' %}" class="btn btn-secondary">Cancelar</a>
-        </div>
-    </form>
+    </div>
 </div>
+
+<!-- jQuery Mask Plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#id_data_nascimento').mask('00/00/0000');
+    });
+</script>
 {% endblock %}

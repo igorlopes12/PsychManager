@@ -1,34 +1,61 @@
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView, DeleteView
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseForbidden, JsonResponse
 from django.urls import reverse_lazy
 from pacientes.models import Paciente, Agendamento
 from pacientes.forms import PacienteForm, AgendamentoForm
 from django.views.generic import ListView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from datetime import datetime, date
 
 
-# Home View (não precisa de FormView ou outra CBV, já que só renderiza a página)
-class HomeView(View):
+# Home View (now requires login)
+class HomeView(LoginRequiredMixin, View):
+    login_url = 'login'
+
     def get(self, request):
-        return render(request, 'home.html')
+        # Get today's date
+        today = date.today()
+        
+        # Get all events for today
+        today_events = Agendamento.objects.filter(data=today).order_by('hora_inicio')
+        
+        # Format events for display
+        events = [{
+            'paciente': agendamento.paciente.nome,
+            'hora_inicio': agendamento.hora_inicio.strftime('%H:%M'),
+            'hora_fim': agendamento.hora_fim.strftime('%H:%M'),
+            'descricao': agendamento.descricao,
+            'id': agendamento.id
+        } for agendamento in today_events]
+
+        context = {
+            'today_events': events,
+            'user': request.user,
+            'today': today.strftime('%d/%m/%Y')
+        }
+        return render(request, 'home.html', context)
 
 
 # Cadastrar Paciente View
-class CadastrarPacienteView(CreateView):
+class CadastrarPacienteView(LoginRequiredMixin, CreateView):
     model = Paciente
     form_class = PacienteForm
     template_name = 'cadastrar_paciente.html'
-    success_url = reverse_lazy('lista_pacientes')  # Ou qualquer URL que você deseja redirecionar após salvar
+    success_url = reverse_lazy('lista_pacientes')
+    login_url = 'login'
 
     def form_valid(self, form):
         # Aqui você pode adicionar qualquer lógica extra antes do salvar, se necessário
         return super().form_valid(form)
 
 
-class ExcluirPacienteView(DeleteView):
+class ExcluirPacienteView(LoginRequiredMixin, DeleteView):
     model = Paciente
     success_url = reverse_lazy('lista_pacientes')  # Redireciona após exclusão
+    login_url = 'login'
 
     def post(self, request, *args, **kwargs):
         # Executa a exclusão via POST
@@ -40,7 +67,9 @@ class ExcluirPacienteView(DeleteView):
 
 
 # Detalhes Paciente View
-class DetalhesPacienteView(View):
+class DetalhesPacienteView(LoginRequiredMixin, View):
+    login_url = 'login'
+
     def get(self, request, id):
         paciente = get_object_or_404(Paciente, pk=id)
         return JsonResponse({
@@ -51,10 +80,11 @@ class DetalhesPacienteView(View):
 
 
 # Editar Paciente View (usando UpdateView)
-class EditarPacienteView(UpdateView):
+class EditarPacienteView(LoginRequiredMixin, UpdateView):
     model = Paciente
     form_class = PacienteForm
     template_name = 'editar_paciente.html'
+    login_url = 'login'
 
     def get_success_url(self):
         return reverse_lazy('lista_pacientes')
@@ -64,14 +94,17 @@ class EditarPacienteView(UpdateView):
 
 
 # Lista de Pacientes View (usando ListView)
-class ListaPacientesView(ListView):
+class ListaPacientesView(LoginRequiredMixin, ListView):
     model = Paciente
     template_name = 'lista_pacientes.html'
     context_object_name = 'pacientes'
+    login_url = 'login'
 
 
 # Agenda View (não tem muita mudança aqui, mas podemos otimizar para uma CBV)
-class AgendaView(View):
+class AgendaView(LoginRequiredMixin, View):
+    login_url = 'login'
+
     def get(self, request):
         agendamentos = Agendamento.objects.all()
         eventos = [{
@@ -83,10 +116,11 @@ class AgendaView(View):
         return render(request, 'agenda.html', {'eventos': eventos})
 
 
-class CriarAgendamentoView(FormView):
+class CriarAgendamentoView(LoginRequiredMixin, FormView):
     form_class = AgendamentoForm
     template_name = 'criar_agendamento.html'
     success_url = reverse_lazy('agenda_view')
+    login_url = 'login'
 
     def form_valid(self, form):
         # Obtenha os dados diretamente do `form.cleaned_data`
@@ -113,7 +147,9 @@ class CriarAgendamentoView(FormView):
 
 
 # Agendamentos por Paciente (agora usando JsonResponse, mas com lógica CBV)
-class AgendamentosPorPacienteView(View):
+class AgendamentosPorPacienteView(LoginRequiredMixin, View):
+    login_url = 'login'
+
     def get(self, request, paciente_id):
         agendamentos = Agendamento.objects.filter(paciente_id=paciente_id)
         eventos = [{
@@ -126,7 +162,9 @@ class AgendamentosPorPacienteView(View):
 
 
 # Dashboard View (similar à lista de pacientes, pode ser uma ListView também)
-class DashboardView(View):
+class DashboardView(LoginRequiredMixin, View):
+    login_url = 'login'
+
     def get(self, request):
         pacientes = Paciente.objects.all()
         return render(request, 'dashboard.html', {'pacientes': pacientes})
